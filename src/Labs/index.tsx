@@ -7,6 +7,8 @@ export default function Labs() {
     return (
         <div id="wd-labs">
             <h1>Labs</h1>
+            <h2>My Name: Yunwen Hu</h2>
+            <a id="wd-github" href="https://github.com/Jamieyw/kambaz-react-web-app">GitHub Repository</a>
             <TOC />  {/* TOC is always rendered */}
             <Routes>
                 <Route path="/" element={<Navigate to="Lab1" />} />
