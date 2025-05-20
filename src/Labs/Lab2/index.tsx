@@ -11,10 +11,18 @@ import Zindex from "./Zindex.tsx";
 import Float from "./Float.tsx";
 import GridLayout from "./GridLayout.tsx";
 import Flex from "./Flex.tsx";
+import ReactIconsSampler from "./ReactIcons.tsx";
+import BootstrapGrids from "./BootstrapGrids.tsx";
+import { Container } from "react-bootstrap";
+import ScreenSizeLabel from "./ScreenSizeLabel.tsx";
+import BootstrapTables from "./BootstrapTables.tsx";
+import BootstrapLists from "./BootstrapLists.tsx";
+import BootstrapForms from "./BootstrapForms.tsx";
+import BootstrapNavigation from "./BootstrapNavigation.tsx";
 
 export default function Lab2() {
   return (
-    <div>
+    <Container>
       <h2>Lab 2 - Cascading Style Sheets</h2>
       <h3>Styling with the STYLE attribute</h3>
       <p style={{ backgroundColor: "blue", color: "white" }}>
@@ -82,7 +90,14 @@ export default function Lab2() {
       <Float />
       <GridLayout />
       <Flex />
+      <ReactIconsSampler />
+      <BootstrapGrids />
+      <ScreenSizeLabel />
+      <BootstrapTables />
+      <BootstrapLists />
+      <BootstrapForms />
+      <BootstrapNavigation />
 
-    </div>
+    </Container>
   );
 }
