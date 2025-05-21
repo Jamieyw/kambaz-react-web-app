@@ -1,6 +1,6 @@
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
-import GreyBanMark from "./GreyBanMark";
+import GrayBanMark from "./GrayBanMark";
 import { Button, Dropdown } from "react-bootstrap";
 
 export default function ModulesControls() {
@@ -26,21 +26,19 @@ export default function ModulesControls() {
             <GreenCheckmark /> Publish modules only
           </Dropdown.Item>
           <Dropdown.Item id="wd-unpublish-all-modules-and-items">
-            <GreyBanMark /> Unpublish all modules and items
+            <GrayBanMark /> Unpublish all modules and items
           </Dropdown.Item>
           <Dropdown.Item id="wd-unpublish-modules-only">
-            <GreyBanMark /> Unpublish modules only
+            <GrayBanMark /> Unpublish modules only
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
 
-      <Button style={{ backgroundColor: "#adb5bd", borderColor: "#adb5bd", color: "black" }} 
-          size="lg" className="me-1 float-end" id="wd-collapse-all">
+      <Button variant="light" size="lg" className="me-1 float-end" id="wd-collapse-all">
         Collapse All
       </Button>
 
-      <Button style={{ backgroundColor: "#adb5bd", borderColor: "#adb5bd", color: "black" }}
-          size="lg" className="me-1 float-end" id="wd-view-progress">
+      <Button variant="light" size="lg" className="me-1 float-end" id="wd-view-progress">
         View Progress
       </Button>
 

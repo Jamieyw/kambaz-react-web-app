@@ -68,7 +68,7 @@ export default function KambazNavigation() {
         Inbox
       </ListGroup.Item>
 
-      <ListGroup.Item to="/Kambaz/Labs" as={Link}
+      <ListGroup.Item to="/Labs" as={Link}
           className="text-center border-0 bg-black text-white">
         <LiaCogSolid className="fs-1 text-danger" /><br />
         Labs

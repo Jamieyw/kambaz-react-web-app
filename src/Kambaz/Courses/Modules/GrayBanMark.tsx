@@ -1,6 +1,6 @@
 import { FaBan, FaCircle } from "react-icons/fa";
 
-export default function GreyBanMark() {
+export default function GrayBanMark() {
   return (
     <span className="me-1 position-relative">
       <FaBan style={{ top: "1px" }} className="text-relative me-1 position-absolute fs-5" />
