@@ -1,6 +1,6 @@
-import Lab1 from "./Lab1";
 import { Route, Routes, Navigate } from "react-router";
 import TOC from "./TOC.tsx";  // TOC: Table of Contents
+import Lab1 from "./Lab1";
 import Lab2 from "./Lab2";
 import Lab3 from "./Lab3";
 export default function Labs() {
