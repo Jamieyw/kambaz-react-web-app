@@ -1,11 +1,21 @@
-import { FormControl, FormGroup, FormLabel, Form, Row, Col, Button } from "react-bootstrap";
+import { useParams } from "react-router";
+import * as db from "../../Database";
+import { FormControl, FormGroup, FormLabel, Form, Row, Col } from "react-bootstrap";
+import { Link } from "react-router";
 
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  const assignment = db.assignments.find((assignment) => assignment._id === aid);
+
+  if (!assignment) {
+    return <div>Assignment not found.</div>;
+  }
+
   return (
     <div>
       <FormGroup>
         <FormLabel>Assignment Name</FormLabel>
-        <FormControl defaultValue="A1" placeholder="Assignment name" />
+        <FormControl defaultValue={`${aid} - ${assignment.title}`} placeholder="Assignment name" />
       </FormGroup>
 
       <div className="my-4 border rounded p-3">
@@ -149,12 +159,12 @@ export default function AssignmentEditor() {
       </Form.Group>
 
       <hr />
-      <Button variant="danger" className="me-2 float-end">
+      <Link to={`/Kambaz/Courses/${cid}/Assignments`} className="btn btn-danger me-2 float-end">
         Save
-      </Button>
-      <Button variant="secondary" className="me-1 float-end">
+      </Link>
+      <Link to={`/Kambaz/Courses/${cid}/Assignments`} className="btn btn-secondary me-1 float-end">
         Cancel
-      </Button>
+      </Link>
 
     </div>
   );
