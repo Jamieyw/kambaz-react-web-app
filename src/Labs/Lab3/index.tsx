@@ -26,8 +26,16 @@ import Spreading from "./Spreading";
 import Destructing from "./Destructing";
 import FunctionDestructing from "./FunctionDestructing";
 import DestructingImports from "./DestructingImports";
+import Classes from "./Classes";
+import Styles from "./Styles";
+import Add from "./Add";
+import Square from "./Square";
+import Highlight from "./Highlight";
+import PathParameters from "./PathParameters";
 
 export default function Lab3() {
+  console.log("Hello World!");
+
   return (
     <Container>
       <div id="wd-lab3">
@@ -59,6 +67,22 @@ export default function Lab3() {
         <Destructing />
         <FunctionDestructing />
         <DestructingImports />
+        <Classes />
+        <Styles />
+
+        <Add a={3} b={4} />
+
+        <h4>Square of 4</h4>
+        <Square>4</Square>
+        <hr />
+
+        <Highlight>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipitratione eaque illo minus cum, saepe totam
+          vel nihil repellat nemo explicabo excepturi consectetur. Modi omnis minus sequi maiores, provident voluptates.
+        </Highlight>
+        <hr />
+
+        <PathParameters />
       </div>
     </Container>
   );
