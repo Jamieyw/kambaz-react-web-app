@@ -1,4 +1,4 @@
-import { Container } from "react-bootstrap";
+import { Container, ListGroup } from "react-bootstrap";
 import VariablesAndConstants from "./VariablesAndConstants";
 import VariableTypes from "./VariableTypes";
 import BooleanVariables from "./BooleanVariables"
@@ -32,14 +32,25 @@ import Add from "./Add";
 import Square from "./Square";
 import Highlight from "./Highlight";
 import PathParameters from "./PathParameters";
+import { useSelector } from "react-redux";
 
 export default function Lab3() {
   console.log("Hello World!");
+  const { todos } = useSelector((state: any) => state.todosReducer);
 
   return (
     <Container>
       <div id="wd-lab3">
         <h2>Lab3 - JavaScript</h2>
+        
+        <ListGroup>
+          {todos.map((todo: any) => (
+            <ListGroup.Item key={todo.id}>
+              {todo.title}
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+
         <VariablesAndConstants />
         <VariableTypes />
         <BooleanVariables />
