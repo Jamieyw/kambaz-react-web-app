@@ -5,14 +5,21 @@ import { BsGripVertical } from "react-icons/bs";
 import ModulesControls from "./ModulesControls";
 import ModuleControlButtons from "./ModuleControlButtons";
 import LessonControlButtons from "./LessonControlButtons";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Modules() {
   const { cid } = useParams();
-  const modules = db.modules;
+  const [modules, setModules] = useState<any[]>(db.modules);
+  const [moduleName, setModuleName] = useState("");
+  const addModule = () => {
+    setModules([ ...modules, { _id: uuidv4(), name: moduleName, course: cid, lessons: [] }]);
+  };
 
   return (
     <div>
-      <ModulesControls /><br /><br /><br /><br />
+      <ModulesControls setModuleName={setModuleName} moduleName={moduleName} addModule={addModule} />
+      <br /><br /><br /><br />
 
       <ListGroup className="rounded-0" id="wd-modules">
         {modules
