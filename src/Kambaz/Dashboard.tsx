@@ -19,11 +19,13 @@ export default function Dashboard({
   updateCourse: () => void;
 }) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  // Destructure enrollments data from the imported database module (db)
+  // Extract the enrollments array (from Database/enrollments.json via Database/index.ts) from the db object
   const { enrollments } = db;
 
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+      <h1 id="wd-dashboard-title">Dashboard ({currentUser.username})</h1> <hr />
       <h5>
         New Course
         <button
@@ -62,7 +64,7 @@ export default function Dashboard({
         <Row xs={1} md={5} className="g-4">
           {courses
             .filter((course) =>
-              currentUser && enrollments.some(
+              enrollments.some(
                 (enrollment) =>
                   enrollment.user === currentUser._id &&
                   enrollment.course === course._id

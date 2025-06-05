@@ -12,7 +12,7 @@ import ProtectedRoute from "./Account/ProtectedRoute";
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>(db.courses);
   const [course, setCourse] = useState<any>({
-    _id: "0", 
+    _id: "0",
     name: "New Course",
     number: "New Number",
     startDate: "2023-09-10",
@@ -24,7 +24,7 @@ export default function Kambaz() {
   const addNewCourse = () => {
     const newCourse = { ...course, _id: uuidv4() };
     setCourses([...courses, newCourse]);
-  }
+  };
 
   const deleteCourse = (courseId: string) => {
     setCourses(courses.filter((course) => course._id !== courseId));
@@ -49,18 +49,29 @@ export default function Kambaz() {
         <Routes>
           <Route path="/" element={<Navigate to="/Kambaz/Account" />} />
           <Route path="/Account/*" element={<Account />} />
-          <Route path="/Dashboard" element={
-            <ProtectedRoute>
-            <Dashboard
-              courses={courses}
-              course={course}
-              setCourse={setCourse}
-              addNewCourse={addNewCourse}
-              deleteCourse={deleteCourse}
-              updateCourse={updateCourse} />
-            </ProtectedRoute>
-          } />
-          <Route path="/Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses} /></ProtectedRoute>} />
+          <Route
+            path="/Dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard
+                  courses={courses}
+                  course={course}
+                  setCourse={setCourse}
+                  addNewCourse={addNewCourse}
+                  deleteCourse={deleteCourse}
+                  updateCourse={updateCourse}
+                />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Courses/:cid/*"
+            element={
+              <ProtectedRoute>
+                <Courses courses={courses} />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/Calendar" element={<h1>Calendar</h1>} />
           <Route path="/Inbox" element={<h1>Inbox</h1>} />
         </Routes>

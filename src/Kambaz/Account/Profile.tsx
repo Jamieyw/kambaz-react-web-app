@@ -17,9 +17,12 @@ export default function Profile() {
     dispatch(setCurrentUser(null));
     navigate("/Kambaz/Account/Signin");
   };
+  // This react's effect useEffect runs only once when the Profile component mounts 
+  // (due to the empty dependency array `[]`).
   useEffect(() => {
     fetchProfile();
   }, []);
+
   return (
     <div className="wd-profile-screen">
       <h3>Profile</h3>

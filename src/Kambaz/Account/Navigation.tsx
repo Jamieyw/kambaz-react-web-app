@@ -8,8 +8,10 @@ export default function AccountNavigation() {
   return (
     <div id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
       {links.map((link) => (
-        <Link to={`/Kambaz/Account/${link}`}
-            className="list-group-item text-danger border border-0">
+        <Link
+          to={`/Kambaz/Account/${link}`}
+          className="list-group-item text-danger border border-0"
+        >
           {link}
         </Link>
       ))}
