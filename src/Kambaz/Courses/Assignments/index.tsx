@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import * as db from "../../Database";
 import { Link } from "react-router-dom";
 import AssignmentControls from "./AssignmentControls";
 import AssignmentsControlButtons from "./AssignmentsControlButtons";
@@ -8,10 +7,11 @@ import GreenCheckmark from "./GreenCheckmark";
 import { ListGroup } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
+  const assignments = useSelector((state: any) => state.assignmentsReducer.assignments);
 
   return (
     <div id="wd-assignments">
@@ -39,16 +39,16 @@ export default function Assignments() {
                   <div className="me-auto">
                     <Link to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
                         className="fs-5 text-decoration-none text-reset">
-                      {assignment._id}
+                      {assignment.title}
                     </Link>
                     <div className="small d-flex flex-wrap mt-1">
                       <span className="text-danger me-1">{assignment.title}</span>
                       <span className="me-1">|</span>
-                      <span className="me-1"><span className="fw-bold">Not available until</span> May 6 at 12:00am</span>
+                      <span className="me-1"><span className="fw-bold">Not available until</span> {assignment.availableFrom}</span>
                       <span className="me-1">|</span>
-                      <span className="me-1">Due May 13 at 11:59pm</span>
+                      <span className="me-1">Due at {assignment.dueDate}</span>
                       <span className="me-1">|</span>
-                      <span>100 pts</span>
+                      <span>{assignment.points} pts</span>
                     </div>
                   </div>
                 </div>
