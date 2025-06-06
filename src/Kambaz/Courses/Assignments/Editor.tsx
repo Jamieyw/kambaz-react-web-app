@@ -21,30 +21,46 @@ import { useEffect } from "react";
 export default function AssignmentEditor() {
   const { cid, aid } = useParams(); // Get course ID (cid) and assignment ID (aid) from URL
   const navigate = useNavigate(); // Hook for navigation
-  const dispatch = useDispatch(); // Get dispatch function from Redux
+  const dispatch = useDispatch(); // Get dispatch function from Redux store
 
-  // Select the current assignment from the Redux store
-  const currentAssignment = useSelector((state: any) => {
-    // If aid is "new", use the default template from the reducer's initial state
+  // Get the current assignment being edited from Redux state
+  const currentAssignment = useSelector((state: any) => state.assignmentsReducer.assignment);
+  
+  // Get all assignments to find the one being edited
+  const assignments = useSelector((state: any) => state.assignmentsReducer.assignments);
+
+  // Initialize the assignment data when component mounts or aid changes
+  useEffect(() => {
     if (aid === "new") {
-      return { ...state.assignmentsReducer.assignment, course: cid };
+      // For new assignments, set the default template
+      dispatch(setAssignment({
+        _id: "newId",
+        title: "New Assignment",
+        course: cid,
+        description: "New Assignment Description",
+        points: "100",
+        dueDate: new Date().toISOString().split('T')[0],
+        availableFrom: new Date().toISOString().split('T')[0],
+        availableUntil: new Date().toISOString().split('T')[0],
+      }));
+    } else {
+      // For existing assignments, find and load the assignment data
+      const existingAssignment = assignments.find((a: any) => a._id === aid);
+      if (existingAssignment) {
+        dispatch(setAssignment(existingAssignment));
+      }
     }
-    // Otherwise, find the assignment from the list
-    return state.assignmentsReducer.assignments.find((a: any) => a._id === aid);
-  });
+  }, [aid, cid, dispatch, assignments]);
 
   // If assignment is not found and it's not a new assignment, display an error
-  if (!currentAssignment) {
+  if (aid !== "new" && !assignments.find((a: any) => a._id === aid)) {
     return <div>Assignment not found.</div>;
   }
 
-  // Sync the found assignment to state.assignment
-  useEffect(() => {
-    dispatch(setAssignment(currentAssignment));
-  }, []); // Only run once
-  // Now use state.assignment everywhere instead of currentAssignment
-  const editingAssignment = useSelector((state: any) => state.assignmentsReducer.assignment);
-
+  // * handleChange + updateAssignmentField work together to allow for real-time,
+  //   granular updates as the user interacts with the form.
+  // * handleSave + addAssignment / updateAssignment work together to persist the final,
+  //   complete assignment object into the main list of assignments in the Redux store.
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -72,19 +88,20 @@ export default function AssignmentEditor() {
         fieldName = "availableUntil";
         break;
       default:
-        return;
+        return; // Do nothing if field not recognized
     }
     dispatch(updateAssignmentField({ field: fieldName, value }));
   };
 
   const handleSave = () => {
     if (aid === "new") {
-      // For new assignments, add to the list
-      dispatch(addAssignment({ ...editingAssignment, course: cid }));
+      // For new assignments, dispatch addAssignment
+      dispatch(addAssignment({ ...currentAssignment, course: cid }));
     } else {
-      // For existing assignments, update the existing one
-      dispatch(updateAssignment(editingAssignment));
+      // For existing assignments, dispatch updateAssignment
+      dispatch(updateAssignment(currentAssignment));
     }
+    // Navigate back to assignments list
     navigate(`/Kambaz/Courses/${cid}/Assignments`);
   };
 
@@ -98,7 +115,7 @@ export default function AssignmentEditor() {
         <FormLabel htmlFor="assignment-title">Assignment Name</FormLabel>
         <FormControl
           id="assignment-title"
-          value={editingAssignment.title}
+          value={currentAssignment.title || ""}
           onChange={handleChange}
           placeholder="Assignment title"
         />
@@ -112,7 +129,11 @@ export default function AssignmentEditor() {
           <FormControl
             as="textarea"
             id="assignment-description"
-            value={editingAssignment.description}
+            // The "value" prop makes this a controlled component, ensuring the textarea's content
+            // is always synchronized with the currentAssignment.description from Redux state.
+            // Any changes made by the user are handled by the handleChange function, which dispatches
+            // an action to update the Redux store in real-time.
+            value={currentAssignment.description || ""}
             onChange={handleChange}
             placeholder="Assignment description"
             rows={5}
@@ -128,7 +149,7 @@ export default function AssignmentEditor() {
           <Form.Control
             id="assignment-points"
             type="number"
-            value={editingAssignment.points}
+            value={currentAssignment.points || ""}
             onChange={handleChange}
           />
         </Col>
@@ -217,6 +238,7 @@ export default function AssignmentEditor() {
         </Form.Label>
         <Col sm={9}>
           <div className="border rounded p-3">
+            {/* Assign to section */}
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Assign to</Form.Label>
               <Form.Select className="form-control">
@@ -226,16 +248,18 @@ export default function AssignmentEditor() {
               </Form.Select>
             </Form.Group>
 
+            {/* Due date section */}
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Due</Form.Label>
               <Form.Control
                 id="assignment-due-date"
                 type="date"
-                value={editingAssignment.dueDate}
+                value={currentAssignment.dueDate || ""}
                 onChange={handleChange}
               />
             </Form.Group>
 
+            {/* Available from/until section */}
             <Row>
               <Col md={6}>
                 <Form.Group>
@@ -243,7 +267,7 @@ export default function AssignmentEditor() {
                   <Form.Control
                     id="assignment-available-from"
                     type="date"
-                    value={editingAssignment.availableFrom}
+                    value={currentAssignment.availableFrom || ""}
                     onChange={handleChange}
                   />
                 </Form.Group>
@@ -254,7 +278,7 @@ export default function AssignmentEditor() {
                   <Form.Control
                     id="assignment-available-until"
                     type="date"
-                    value={editingAssignment.availableUntil}
+                    value={currentAssignment.availableUntil || ""}
                     onChange={handleChange}
                   />
                 </Form.Group>
