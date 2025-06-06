@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Row, Col, Card, Button, FormControl } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import * as db from "./Database";
+import FacultyOnly from "./FacultyOnly";
 
 export default function Dashboard({
   courses,
@@ -26,36 +27,39 @@ export default function Dashboard({
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard ({currentUser.username})</h1> <hr />
-      <h5>
-        New Course
-        <button
-          className="btn btn-primary float-end"
-          id="wd-add-new-course-click"
-          onClick={addNewCourse}
-        >
-          Add
-        </button>
-        <button
-          className="btn btn-warning float-end me-2"
-          onClick={updateCourse}
-          id="wd-update-course-click"
-        >
-          Update
-        </button>
-      </h5>
-      <hr />
-      <FormControl
-        value={course.name}
-        className="mb-2"
-        onChange={(e) => setCourse({ ...course, name: e.target.value })}
-      />
-      <FormControl
-        value={course.description}
-        as="textarea"
-        rows={3}
-        onChange={(e) => setCourse({ ...course, description: e.target.value })}
-      />
-      <hr />
+      <FacultyOnly>
+        <h5>
+          New Course
+          <button
+            className="btn btn-primary float-end"
+            id="wd-add-new-course-click"
+            onClick={addNewCourse}
+          >
+            Add
+          </button>
+          <button
+            className="btn btn-warning float-end me-2"
+            onClick={updateCourse}
+            id="wd-update-course-click"
+          >
+            Update
+          </button>
+        </h5>
+        <hr />
+        <FormControl
+          value={course.name}
+          className="mb-2"
+          onChange={(e) => setCourse({ ...course, name: e.target.value })}
+        />
+        <FormControl
+          value={course.description}
+          as="textarea"
+          rows={3}
+          onChange={(e) => setCourse({ ...course, description: e.target.value })}
+        />
+        <hr />
+      </FacultyOnly>
+
       <h2 id="wd-dashboard-published">
         Published Courses ({courses.length})
       </h2>{" "}
@@ -95,26 +99,29 @@ export default function Dashboard({
                       </Card.Text>
 
                       <Button variant="primary">Go</Button>
-                      <button
-                        onClick={(event) => {
-                          event.preventDefault();
-                          deleteCourse(course._id);
-                        }}
-                        className="btn btn-danger float-end"
-                        id="wd-delete-course-click"
-                      >
-                        Delete
-                      </button>
-                      <button
-                        id="wd-edit-course-click"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          setCourse(course);
-                        }}
-                        className="btn btn-warning me-2 float-end"
-                      >
-                        Edit
-                      </button>
+
+                      <FacultyOnly>
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            deleteCourse(course._id);
+                          }}
+                          className="btn btn-danger float-end"
+                          id="wd-delete-course-click"
+                        >
+                          Delete
+                        </button>
+                        <button
+                          id="wd-edit-course-click"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            setCourse(course);
+                          }}
+                          className="btn btn-warning me-2 float-end"
+                        >
+                          Edit
+                        </button>
+                      </FacultyOnly>
                     </Card.Body>
                   </Link>
                 </Card>

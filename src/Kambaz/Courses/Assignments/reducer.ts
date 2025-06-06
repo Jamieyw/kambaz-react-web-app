@@ -1,0 +1,61 @@
+import { createSlice } from "@reduxjs/toolkit";
+import { assignments as dbAssignments } from "../../Database";
+import { v4 as uuidv4 } from "uuid";
+
+const initialState = {
+  assignments: dbAssignments,
+  // Default assignment template for new assignments
+  assignment: {
+    _id: "newId",
+    title: "New Assignment",
+    course: "",
+    description: "New Assignment Description",
+    points: "100",
+    dueDate: new Date().toISOString().split('T')[0],  // or null
+    availableFrom: new Date().toISOString().split('T')[0],
+    availableUntil: new Date().toISOString().split('T')[0],
+  }
+};
+
+const assignmentsSlice = createSlice({
+  name: "assignments",
+  initialState,
+  reducers: {
+    addAssignment: (state, { payload: assignment }) => {
+      const newAssignment: any = {
+        ...state.assignment,  // Start with the current template
+        ...assignment,  // Override with any payload fields
+        _id: uuidv4(),
+      };
+      state.assignments = [...state.assignments, newAssignment];
+    },
+
+    deleteAssignment: (state, { payload: assignmentId }) => {
+      state.assignments = state.assignments.filter(
+        (a: any) => a._id !== assignmentId
+      );
+    },
+
+    updateAssignment: (state, { payload: assignment }) => {
+      state.assignments = state.assignments.map((a: any) =>
+        a._id === assignment._id ? assignment : a
+      );
+    },
+
+    // Reducer to set the current assignment being edited/created
+    setAssignment: (state, { payload: assignment }) => {
+      state.assignment = assignment;
+    },
+
+    // Reducer to update a specific field of the current assignment being edited/created
+    updateAssignmentField: (state, { payload: { field, value }}) => {
+      state.assignment = {
+        ...state.assignment,
+        [field]: value,  // Dynamically sets state.assignment.field's_value (computed property access)
+      };
+    },
+  }
+});
+
+export const { addAssignment, deleteAssignment, updateAssignment, setAssignment, updateAssignmentField } = assignmentsSlice.actions;
+export default assignmentsSlice.reducer;

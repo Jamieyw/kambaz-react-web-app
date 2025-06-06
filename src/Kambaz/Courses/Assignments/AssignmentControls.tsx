@@ -1,7 +1,11 @@
 import { Button } from "react-bootstrap";
 import { FaPlus, FaSearch } from "react-icons/fa";
+import FacultyOnly from "../../FacultyOnly";
+import { Link, useParams } from "react-router";
 
 export default function AssignmentControls() {
+  const { cid } = useParams();
+  
   return (
     <div id="wd-assignments-controls" className="d-flex justify-content-between align-items-center">
       {/* Search part - left aligned */}
@@ -27,14 +31,19 @@ export default function AssignmentControls() {
       
       {/* Buttons part - right aligned */}
       <div>
-        <Button variant="light" size="lg" className="me-1" id="wd-add-group-btn">
-          <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-          Group
-        </Button>
-        <Button variant="danger" size="lg" id="wd-add-assignment-btn">
-          <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-          Assignment
-        </Button>
+        <FacultyOnly>
+          <Button variant="light" size="lg" className="me-1" id="wd-add-group-btn">
+            <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+            Group
+          </Button>
+
+          <Link to={`/Kambaz/Courses/${cid}/Assignments/new`}>
+            <Button variant="danger" size="lg" id="wd-add-assignment-btn">
+              <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+              Assignment
+            </Button>
+          </Link>
+        </FacultyOnly>
       </div>
     </div>
   );
