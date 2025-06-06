@@ -13,6 +13,19 @@ export default function Courses() {
   const { pathname } = useLocation();
   const {courses} = useSelector((state: any) => state.coursesReducer);
   const course = courses.find((course: any) => course._id === cid);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+
+  // Check if current user is enrolled in this course
+  const isEnrolled = enrollments.some(
+    (enrollment: any) =>
+      enrollment.user === currentUser._id && enrollment.course === cid
+  );
+
+  // If user is not enrolled, redirect to dashboard
+  if (!isEnrolled) {
+    return <Navigate to="/Kambaz/Dashboard" replace />;
+  }
 
   return (
     <div id="wd-courses">
