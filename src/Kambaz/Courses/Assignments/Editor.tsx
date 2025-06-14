@@ -17,6 +17,7 @@ import {
 } from "./reducer";
 import type React from "react";
 import { useEffect } from "react";
+import * as client from "./client"; // Import the new assignment client
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams(); // Get course ID (cid) and assignment ID (aid) from URL
@@ -25,42 +26,40 @@ export default function AssignmentEditor() {
 
   // Get the current assignment being edited from Redux state
   const currentAssignment = useSelector((state: any) => state.assignmentsReducer.assignment);
-  
-  // Get all assignments to find the one being edited
-  const assignments = useSelector((state: any) => state.assignmentsReducer.assignments);
 
   // Initialize the assignment data when component mounts or aid changes
   useEffect(() => {
-    if (aid === "new") {
-      // For new assignments, set the default template
-      dispatch(setAssignment({
-        _id: "newId",
-        title: "New Assignment",
-        course: cid,
-        description: "New Assignment Description",
-        points: "100",
-        dueDate: new Date().toISOString().split('T')[0],
-        availableFrom: new Date().toISOString().split('T')[0],
-        availableUntil: new Date().toISOString().split('T')[0],
-      }));
-    } else {
-      // For existing assignments, find and load the assignment data
-      const existingAssignment = assignments.find((a: any) => a._id === aid);
-      if (existingAssignment) {
-        dispatch(setAssignment(existingAssignment));
+    // Function to load assignment details
+    const loadAssignment = async () => {
+      if (aid && aid !== "new") {
+        try {
+          const fetchedAssignment = await client.findAssignmentById(aid);
+          dispatch(setAssignment(fetchedAssignment));
+        } catch (error) {
+          console.error("Error fetching assignment for edit:", error);
+          navigate(`/Kambaz/Courses/${cid}/Assignments`);
+        }
+      } else {
+        dispatch(setAssignment({
+          _id: "newId",
+          title: "New Assignment",
+          course: cid,
+          description: "New Assignment Description",
+          points: "100",
+          dueDate: new Date().toISOString().split('T')[0],
+          availableFrom: new Date().toISOString().split('T')[0],
+          availableUntil: new Date().toISOString().split('T')[0],
+        }));
       }
-    }
-  }, [aid, cid, dispatch, assignments]);
-
-  // If assignment is not found and it's not a new assignment, display an error
-  if (aid !== "new" && !assignments.find((a: any) => a._id === aid)) {
-    return <div>Assignment not found.</div>;
-  }
+    };
+    loadAssignment();
+  }, [aid, cid, dispatch, navigate]);
 
   // * handleChange + updateAssignmentField work together to allow for real-time,
   //   granular updates as the user interacts with the form.
   // * handleSave + addAssignment / updateAssignment work together to persist the final,
-  //   complete assignment object into the main list of assignments in the Redux store.
+  //   complete assignment object into the main list of assignments in the Redux store
+  //   after saving to the backend.
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -93,16 +92,30 @@ export default function AssignmentEditor() {
     dispatch(updateAssignmentField({ field: fieldName, value }));
   };
 
-  const handleSave = () => {
-    if (aid === "new") {
-      // For new assignments, dispatch addAssignment
-      dispatch(addAssignment({ ...currentAssignment, course: cid }));
-    } else {
-      // For existing assignments, dispatch updateAssignment
-      dispatch(updateAssignment(currentAssignment));
+  const handleSave = async () => {
+    if (!cid) {
+      console.error("Course ID is missing for saving assignment.");
+      return;
     }
-    // Navigate back to assignments list
-    navigate(`/Kambaz/Courses/${cid}/Assignments`);
+
+    try {
+      if (aid === "new") {
+        // For new assignments, call createAssignment API
+        const createdAssignment = await client.createAssignment(cid, {
+          ...currentAssignment,
+          course: cid,
+        });
+        dispatch(addAssignment(createdAssignment)); // Add to Redux state with server-generated ID
+      } else {
+        // For existing assignments, call updateAssignment API
+        await client.updateAssignment(currentAssignment);
+        dispatch(updateAssignment(currentAssignment)); // Update Redux state
+      }
+      // Navigate back to assignments list on success
+      navigate(`/Kambaz/Courses/${cid}/Assignments`);
+    } catch (error) {
+      console.error("Error saving assignment:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -124,15 +137,11 @@ export default function AssignmentEditor() {
       <div className="my-4 border rounded p-3">
         <FormGroup className="mb-3">
           <FormLabel htmlFor="assignment-description">
-            Assignment Description
+            Assignment Description 
           </FormLabel>
           <FormControl
             as="textarea"
             id="assignment-description"
-            // The "value" prop makes this a controlled component, ensuring the textarea's content
-            // is always synchronized with the currentAssignment.description from Redux state.
-            // Any changes made by the user are handled by the handleChange function, which dispatches
-            // an action to update the Redux store in real-time.
             value={currentAssignment.description || ""}
             onChange={handleChange}
             placeholder="Assignment description"

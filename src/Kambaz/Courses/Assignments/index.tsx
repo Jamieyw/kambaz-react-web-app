@@ -9,8 +9,9 @@ import { BsGripVertical } from "react-icons/bs";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import FacultyOnly from "../../FacultyOnly";
-import { deleteAssignment } from "./reducer";
-import { useState } from "react";
+import { deleteAssignment, setAssignments } from "./reducer"; // Import setAssignments
+import { useState, useEffect } from "react"; // Import useEffect
+import * as client from "./client"; // Import the new assignment client
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -22,22 +23,48 @@ export default function Assignments() {
   // State for managing the delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null);
+
   // Function to show the delete confirmation modal
   const handleDeleteClick = (assignment: any) => {
     setAssignmentToDelete(assignment);
     setShowDeleteModal(true);
   };
-  // Function to confirm deletion
-  const handleConfirmDelete = () => {
-    dispatch(deleteAssignment(assignmentToDelete._id));
-    setShowDeleteModal(false);
-    setAssignmentToDelete(null);
+
+  // Async function to confirm deletion with API call
+  const handleConfirmDelete = async () => {
+    if (assignmentToDelete && assignmentToDelete._id) {
+      try {
+        await client.deleteAssignment(assignmentToDelete._id); // Call the API
+        dispatch(deleteAssignment(assignmentToDelete._id)); // Update Redux state on success
+        setShowDeleteModal(false);
+        setAssignmentToDelete(null);
+      } catch (error) {
+        console.error("Error deleting assignment:", error);
+      }
+    }
   };
+
   // Function to cancel deletion
   const handleCancelDelete = () => {
     setShowDeleteModal(false);
     setAssignmentToDelete(null);
-  }
+  };
+
+  // Fetch assignments from the backend when the component mounts or cid changes
+  const fetchAssignments = async () => {
+    if (cid) { // Only fetch if cid is available
+      try {
+        const fetchedAssignments = await client.findAssignmentsForCourse(cid);
+        dispatch(setAssignments(fetchedAssignments)); // Set assignments in Redux
+      } catch (error) {
+        console.error("Error fetching assignments:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid]); // Re-fetch when course ID changes
 
   return (
     <div id="wd-assignments">
@@ -58,9 +85,9 @@ export default function Assignments() {
         </div>
 
         {assignments
-          .filter((assignment: any) => cid === assignment.course)
+          .filter((assignment: any) => cid === assignment.course) // Still filter locally based on current course
           .map((assignment: any) => (
-            <ListGroup className="rounded-0">
+            <ListGroup className="rounded-0" key={assignment._id}> {/* Add key for list rendering */}
               <ListGroup.Item className="wd-assignment p-3 ps-1">
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="d-flex me-2">

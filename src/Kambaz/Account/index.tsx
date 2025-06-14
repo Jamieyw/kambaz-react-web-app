@@ -26,7 +26,6 @@ export default function Account() {
           </Routes>
         </div>
       </div>
-
     </div>
   );
 }

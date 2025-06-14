@@ -1,5 +1,10 @@
 import axios from "axios";
 
+
+ // Axios instance configured to include credentials (like cookies) with every request.
+ // This is essential for cross-origin requests that need to carry authentication
+ // credentials like cookies or HTTP authentication. The withCredentials flag
+ // allows the browser to send cookies from the current domain to the API ServerRouter.
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
 export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
@@ -30,3 +35,12 @@ export const signout = async () => {
   return response.data;
 };
 
+export const findMyCourses = async () => {
+  const { data } = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
+  return data;
+};
+
+export const createCourse = async (course: any) => {
+  const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses`, course);
+  return data;
+};

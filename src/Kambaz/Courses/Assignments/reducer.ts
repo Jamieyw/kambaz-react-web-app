@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { assignments as dbAssignments } from "../../Database";
 import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
-  assignments: dbAssignments,
+  assignments: [],
   // Default assignment template for new assignments
   assignment: {
     _id: "newId",
@@ -21,13 +20,17 @@ const assignmentsSlice = createSlice({
   name: "assignments",
   initialState,
   reducers: {
+    setAssignments: (state, { payload: assignments }) => {
+      state.assignments = assignments;
+    },
+
     addAssignment: (state, { payload: assignment }) => {
       const newAssignment: any = {
         ...state.assignment,  // Start with the current template
         ...assignment,  // Override with any payload fields
         _id: uuidv4(),
       };
-      state.assignments = [...state.assignments, newAssignment];
+      state.assignments = [...state.assignments, newAssignment] as any;
     },
 
     deleteAssignment: (state, { payload: assignmentId }) => {
@@ -39,7 +42,7 @@ const assignmentsSlice = createSlice({
     updateAssignment: (state, { payload: assignment }) => {
       state.assignments = state.assignments.map((a: any) =>
         a._id === assignment._id ? assignment : a
-      );
+      ) as any ;
     },
 
     // Reducer to set the current assignment being edited/created
@@ -57,5 +60,5 @@ const assignmentsSlice = createSlice({
   }
 });
 
-export const { addAssignment, deleteAssignment, updateAssignment, setAssignment, updateAssignmentField } = assignmentsSlice.actions;
+export const { setAssignments, addAssignment, deleteAssignment, updateAssignment, setAssignment, updateAssignmentField } = assignmentsSlice.actions;
 export default assignmentsSlice.reducer;
