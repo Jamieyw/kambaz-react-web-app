@@ -1,12 +1,15 @@
+// client/src/Dashboard.tsx
 import { Link } from "react-router-dom";
 import { Row, Col, Card, Button, FormControl } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import FacultyOnly from "./FacultyOnly";
-import { enrollUserInCourse, unenrollUserFromCourse } from "./Courses/People/Enrollment/reducer";
+import { useEffect } from "react";
+import * as enrollmentClient from "./Courses/People/Enrollment/client"; // Import the enrollment client
+import { setEnrollments, addEnrollment, removeEnrollment } from "./Courses/People/Enrollment/reducer";
 
 export default function Dashboard({
   courses,
-  course,  
+  course,
   setCourse,
   addNewCourse,
   deleteCourse,
@@ -23,6 +26,41 @@ export default function Dashboard({
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
 
+  // Function to fetch enrollments for the current user
+  const fetchUserEnrollments = async (userId: string) => {
+    try {
+      const fetchedEnrollments = await enrollmentClient.findEnrollmentsForUser(userId);
+      dispatch(setEnrollments(fetchedEnrollments));
+    } catch (error) {
+      console.error("Failed to fetch enrollments:", error);
+    }
+  };
+  useEffect(() => {
+    if (currentUser && currentUser._id) {
+      fetchUserEnrollments(currentUser._id);
+    }
+  }, [currentUser, dispatch]);
+
+  // Function to enroll a user in a course
+  const enrollUserInCourse = async (userId: string, courseId: string) => {
+    try {
+      const newEnrollment = await enrollmentClient.enrollUserInCourse(userId, courseId);
+      dispatch(addEnrollment(newEnrollment));
+    } catch (error) {
+      console.error("Failed to enroll in course:", error);
+    }
+  };
+
+  // Function to unenroll a user from a course
+  const unenrollUserFromCourse = async (userId: string, courseId: string) => {
+    try {
+      await enrollmentClient.unenrollUserFromCourse(userId, courseId);
+      dispatch(removeEnrollment({ userId, courseId }));
+    } catch (error) {
+      console.error("Failed to unenroll from course:", error);
+    }
+  };
+
   // Check if user is enrolled in a course
   const isUserEnrolled = (courseId: string) => {
     return enrollments.some(
@@ -32,17 +70,11 @@ export default function Dashboard({
   };
 
   // Handle enrollment/unenrollment
-  const handleEnrollmentToggle = (courseId: string) => {
+  const handleEnrollmentToggle = async (courseId: string) => {
     if (isUserEnrolled(courseId)) {
-      dispatch(unenrollUserFromCourse({
-        userId: currentUser._id,
-        courseId
-      }));
+      await unenrollUserFromCourse(currentUser._id, courseId);
     } else {
-      dispatch(enrollUserInCourse({
-        userId: currentUser._id,
-        courseId
-      }));
+      await enrollUserInCourse(currentUser._id, courseId);
     }
   };
 
