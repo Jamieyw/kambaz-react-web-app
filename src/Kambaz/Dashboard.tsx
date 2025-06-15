@@ -87,7 +87,7 @@ export default function Dashboard({
       </FacultyOnly>
 
       <h2 id="wd-dashboard-published">
-        {`Courses (${courses.length})`}
+        {`My Courses (${courses.length})`}
       </h2>
       <hr />
 

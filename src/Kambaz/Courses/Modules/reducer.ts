@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   modules: [],
@@ -14,13 +13,12 @@ const modulesSlice = createSlice({
     },
 
     addModule: (state, { payload: module }) => {
+      // Use the module directly from the payload, which already contains the server-generated _id
       const newModule: any = {
-        _id: uuidv4(),
-        lessons: [],
-        name: module.name,
-        course: module.course,
+        ...module, // module already has _id, name, course
+        lessons: [], // Ensure lessons array is initialized if not present from server
       };
-      state.modules = [ ...state.modules, newModule ] as any;
+      state.modules = [...state.modules, newModule] as any;
     },
 
     deleteModule: (state, { payload: moduleId }) => {
@@ -30,7 +28,7 @@ const modulesSlice = createSlice({
     updateModule: (state, { payload: module }) => {
       state.modules = state.modules.map((m: any) =>
         m._id === module._id ? module : m
-      ) as any; 
+      ) as any;
     },
 
     editModule: (state, { payload: moduleId }) => {
@@ -41,5 +39,6 @@ const modulesSlice = createSlice({
   },
 });
 
-export const { setModules, addModule, deleteModule, updateModule, editModule } = modulesSlice.actions;
+export const { setModules, addModule, deleteModule, updateModule, editModule } =
+  modulesSlice.actions;
 export default modulesSlice.reducer;
