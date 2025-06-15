@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   assignments: [],
@@ -28,7 +27,6 @@ const assignmentsSlice = createSlice({
       const newAssignment: any = {
         ...state.assignment,  // Start with the current template
         ...assignment,  // Override with any payload fields
-        _id: uuidv4(),
       };
       state.assignments = [...state.assignments, newAssignment] as any;
     },
