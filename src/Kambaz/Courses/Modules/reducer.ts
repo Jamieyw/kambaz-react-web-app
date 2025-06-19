@@ -8,9 +8,9 @@ const modulesSlice = createSlice({
   name: "modules",
   initialState,
   reducers: {
-    setModules: (state, action) => {
-      state.modules = action.payload;
-    },
+    setModules: (state, { payload: modules }) => {
+     state.modules = modules;
+   },
 
     addModule: (state, { payload: module }) => {
       // Use the module directly from the payload, which already contains the server-generated _id
