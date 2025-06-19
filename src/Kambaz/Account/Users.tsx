@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import * as client from "./client";
 import PeopleTable from "../Courses/People/Table";
 import { FormControl } from "react-bootstrap";
+import { FaPlus } from "react-icons/fa";
 
 
 export default function Users() {
@@ -10,6 +11,19 @@ export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
   const [role, setRole] = useState("");
   const [name, setName] = useState("");
+
+  const createUser = async () => {
+    const user = await client.createUser({
+      firstName: "New",
+      lastName: `User${users.length + 1}`,
+      username: `newuser${Date.now()}`,
+      password: "password123",
+      email: `email${users.length + 1}@neu.edu`,
+      section: "S101",
+      role: "STUDENT",
+    });
+    setUsers([...users, user]);
+  };
 
   const fetchUsers = async () => {
     const users = await client.findAllUsers();
@@ -42,6 +56,10 @@ export default function Users() {
   return (
     <div>
       <h3>Users</h3>
+      <button onClick={createUser} className="float-end btn btn-danger wd-add-people">
+        <FaPlus className="me-2" />
+        Users
+      </button>
       <FormControl onChange={(e) => filterUsersByName(e.target.value)}
         placeholder="Search people"
         className="float-start w-25 me-2 wd-filter-by-name" />
