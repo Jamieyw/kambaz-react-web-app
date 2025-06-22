@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import * as client from "./client";
 import { useEffect, useState } from "react";
 import QuizDetails from "./Quizzes/QuizDetails";
-import QuizDetailsEditor from "./Quizzes/QuizDetailsEditor";
+// import QuizDetailsEditor from "./Quizzes/QuizDetailsEditor";
 
 export default function Courses() {
   const { cid } = useParams();
