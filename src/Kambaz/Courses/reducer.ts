@@ -25,7 +25,6 @@ const coursesSlice = createSlice({
       const newCourse: any = {
         ...state.course,
         ...course,
-        _id: uuidv4(),
       };
       state.courses = [...state.courses, newCourse];
     },

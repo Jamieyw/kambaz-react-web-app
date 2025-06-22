@@ -25,7 +25,8 @@ export default function CourseNavigation() {
           * "rounded-0": Removes border radius, creating square corners instead of rounded ones
       */}
       {links.map((link) => (
-        <ListGroup.Item key={link.path} as={Link} to={link.path} className={`list-group-item border border-0
+        <ListGroup.Item key={link.path} as={Link} to={link.path} 
+            className={`list-group-item border border-0
               ${pathname.includes(link.label) ? "active" : "text-danger"}`}>
           {link.label}
         </ListGroup.Item>
