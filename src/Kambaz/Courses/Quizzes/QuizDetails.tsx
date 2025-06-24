@@ -106,10 +106,10 @@ export default function QuizDetails() {
             </thead>
             <tbody>
               <tr>
-                <td>{currentQuiz.dueDate}</td>
+                <td>{new Date(currentQuiz.dueDate).toISOString().split('T')[0]}</td>
                 <td>{currentQuiz.assignedTo}</td>
-                <td>{currentQuiz.availableDate}</td>
-                <td>{currentQuiz.untilDate}</td>
+                <td>{new Date(currentQuiz.availableDate).toISOString().split('T')[0]}</td>
+                <td>{new Date(currentQuiz.untilDate).toISOString().split('T')[0]}</td>
               </tr>
             </tbody>
           </Table>
