@@ -7,32 +7,27 @@ import "react-quill-new/dist/quill.snow.css";
 import * as quizzesClient from "./client";
 import { updateQuiz } from "./reducer";
 
-export default function QuizDetailsTab() {
+export default function QuizDetailsTab(
+  { quiz: initialQuiz, onUpdate }: { quiz: any; onUpdate: () => void }
+) {
   const { cid, qid } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [quiz, setQuiz] = useState<any>(null);
 
-  const fetchQuiz = async () => {
-    try {
-        const quizData = await quizzesClient.findQuizById(qid!);
-        // Format dates for input fields
-        const formattedQuiz = {
-          ...quizData,
-          dueDate: quizData.dueDate ? new Date(quizData.dueDate).toISOString().split('T')[0] : "",
-          availableDate: quizData.availableDate ? new Date(quizData.availableDate).toISOString().split('T')[0] : "",
-          untilDate: quizData.untilDate ? new Date(quizData.untilDate).toISOString().split('T')[0] : "",
-        };
-        setQuiz(formattedQuiz);
-      } catch (error) {
-        console.error("Error fetching quiz:", error);
-      }
-  };
-
   useEffect(() => {
-    fetchQuiz();
-  }, [qid]);
+    if (initialQuiz) {
+      // Format dates for input fields
+      const formattedQuiz = {
+        ...initialQuiz,
+        dueDate: initialQuiz.dueDate ? new Date(initialQuiz.dueDate).toISOString().split('T')[0] : "",
+        availableDate: initialQuiz.availableDate ? new Date(initialQuiz.availableDate).toISOString().split('T')[0] : "",
+        untilDate: initialQuiz.untilDate ? new Date(initialQuiz.untilDate).toISOString().split('T')[0] : "",
+      };
+      setQuiz(formattedQuiz);
+    }
+  }, [initialQuiz, qid]);
 
   const handleInputChange = (field: string, value: any) => {
     if (quiz) {
@@ -45,6 +40,7 @@ export default function QuizDetailsTab() {
     try {
       const updatedQuiz = await quizzesClient.updateQuiz(quiz);
       dispatch(updateQuiz(updatedQuiz));
+      onUpdate(); // Refresh parent data
       navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}/details`);
     } catch (error) {
       console.error("Error saving quiz:", error);
@@ -57,6 +53,7 @@ export default function QuizDetailsTab() {
       const publishedQuiz = { ...quiz, published: true };
       const updatedQuiz = await quizzesClient.updateQuiz(publishedQuiz);
       dispatch(updateQuiz(updatedQuiz));
+      onUpdate(); // Refresh parent data
       navigate(`/Kambaz/Courses/${cid}/Quizzes`);
     } catch (error) {
       console.error("Error saving and publishing quiz:", error);
@@ -146,10 +143,12 @@ export default function QuizDetailsTab() {
           <Col sm={9}>
             <Form.Control
               type="number"
-              value={quiz.points}
-              onChange={(e) =>
-                handleInputChange("points", parseInt(e.target.value) || 0)
-              }
+              value={quiz.points !== null && !isNaN(quiz.points) ? quiz.points : ""}
+              onChange={(e) => {
+                const value = e.target.value;
+                const numericValue = Number(value);
+                handleInputChange("points", isNaN(numericValue) ? 0 : numericValue);
+              }}
               min="0"
             />
           </Col>
@@ -208,11 +207,22 @@ export default function QuizDetailsTab() {
           </Form.Label>
           <Col sm={9}>
             <Row className="d-flex align-items-center">
+              <Col sm={1}>
+                <Form.Check type="checkbox"
+                  checked={quiz.timeLimit && quiz.timeLimit > 0}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      handleInputChange("timeLimit", 20);
+                    } else {
+                      handleInputChange("timeLimit", 0);
+                    }
+                  }}
+                />
+              </Col>
               <Col sm={3}>
                 <Form.Control
                   type="number"
                   value={quiz.timeLimit}
-                  defaultValue="20"
                   onChange={(e) =>
                     handleInputChange("timeLimit", e.target.value)
                   }

@@ -59,7 +59,10 @@ export default function QuizDetails() {
             </Row>
             <Row className="mb-2">
               <Col sm={5} className="text-end fw-bold">Time Limit</Col>
-              <Col sm={7}>{currentQuiz.timeLimit}</Col>
+              <Col sm={7}>
+                {currentQuiz.timeLimit && currentQuiz.timeLimit > 0 ? 
+                  `${currentQuiz.timeLimit} Minutes` : 'No Time Limit'}
+                </Col>
             </Row>
             <Row className="mb-2">
               <Col sm={5} className="text-end fw-bold">Multiple Attempts</Col>
