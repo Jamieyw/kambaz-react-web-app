@@ -25,10 +25,9 @@ export default function Dashboard({
   setEnrolling: (enrolling: boolean) => void;
   updateEnrollment: (courseId: string, enrolled: boolean) => void;
 }) {
+  
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   
-
-
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">

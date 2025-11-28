@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { courses as dbCourses } from "../Database";
-import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   courses: dbCourses,
@@ -25,7 +24,6 @@ const coursesSlice = createSlice({
       const newCourse: any = {
         ...state.course,
         ...course,
-        _id: uuidv4(),
       };
       state.courses = [...state.courses, newCourse];
     },

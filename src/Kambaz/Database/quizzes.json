@@ -1,0 +1,28 @@
+[
+  {
+  _id: "Q1234567890",
+  title: "HTML Basics & Semantics Quiz",
+  Description: "This quiz covers fundamental HTML tags, document structure, and semantic elements.",
+  course: "CS101",
+  published: true,
+  numQuestions: 15,
+  assignedTo: "Everyone",
+  quizType: "Graded Quiz",
+  points: 100,
+  assignmentGroup: "Quizzes",
+  shuffleAnswers: "Every Time",
+  timeLimit: "30 minutes",
+  multipleAttempts: "No",
+  viewResponses: "Always",
+  showCorrectAnswers: "After Due Date",
+  accessCode: "",
+  oneQuestionAtATime: "Yes",
+  webcamRequired: "No",
+  dueDate: new Date("2025-07-05T23:59:00-07:00"),
+  availableDate: new Date("2025-07-01T09:00:00-07:00"),
+  untilDate: new Date("2025-07-06T23:59:00-07:00"),
+  lockQuestionsAfterAnswer: "No",
+  requireRespondusLockDownBrowser: "No",
+  requiredtoViewQuizResults: "No",
+}
+]

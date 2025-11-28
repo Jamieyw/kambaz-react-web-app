@@ -41,7 +41,7 @@ body * {
 }
 
 .btn-secondary {
-  --bs-btn-color: #000 !important;
+  --bs-btn-color: #000 !important;  /* Overrides Bootstrap's default for this variable */
   --bs-btn-bg: #c7cdd1 !important;
   --bs-btn-border-color: #c7cdd1 !important;
   --bs-btn-hover-color: #fff !important;
@@ -57,5 +57,9 @@ body * {
 }
 
 .wd-assignment {
+  border-left: 3px solid green !important;
+}
+
+.wd-quizz {
   border-left: 3px solid green !important;
 }

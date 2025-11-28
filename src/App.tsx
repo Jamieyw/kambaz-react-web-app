@@ -3,6 +3,7 @@ import Kambaz from "./Kambaz";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./Kambaz/store";
+import LandingPage from "./LandingPage";
 
 /**
  * Main application component that sets up routing using HashRouter.
@@ -18,9 +19,10 @@ export default function App() {
       <Provider store={store}>
         <div>
           <Routes>
-            <Route path="/" element={<Navigate to="Kambaz" />} />
+            <Route path="/" element={<Navigate to="Landing-page" />} />
             <Route path="/Labs/*" element={<Labs />} />
             <Route path="/Kambaz/*" element={<Kambaz />} />
+            <Route path="/Landing-page" element={<LandingPage />} />
           </Routes>
         </div>
       </Provider>
